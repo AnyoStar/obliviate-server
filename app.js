@@ -9,3 +9,10 @@ app.get('/', (req, res) => {
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
+
+
+app.get('/memo', (req, res) => {
+  res.send(`
+  용아야 안녕
+  `)
+})
