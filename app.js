@@ -48,34 +48,38 @@ app.listen(port, () => {
 app.get("/memo", (req, res) => {
   res.send(`
 
-  용아야 이거 검색창이야 받아
+  용아야 이거 토큰서비스야 받아
 
-  <div class="search">
-    <input type="text" placeholder="검색어 입력">
-    <img src="https://s3.ap-northeast-2.amazonaws.com/cdn.wecode.co.kr/icon/search.png">
-  </div>
+  //토큰 검증
+  import jwtDecode from "jwt-decode";
 
-  ========================================= 이 밑은 CSS 파일 ==============
-
-  .search {
-    position: relative;
-    width: 300px;
+  //현재 사용자 정보 가져오기
+  export function getCurrrentUser() {
+    const jwt = localStorage.getItem("token");
+    if(!jwt) {
+      return undefined;
+   }
+    try {
+      const decodedToken = jwtDecode(jwt);
+      return decodedToken;
+    } catch(error) {
+      return undefined;
+    }
   }
-  
-  input {
-    width: 100%;
-    border: 1px solid #bbb;
-    border-radius: 8px;
-    padding: 10px 12px;
-    font-size: 14px;
-  }
-  
-  img {
-    position : absolute;
-    width: 17px;
-    top: 10px;
-    right: 12px;
-    margin: 0;
+
+  //로컬 스토리지에 저장된 토큰이 유효한지 판별
+  export function isValidJwt() {
+    const decodedToken = getCurrrentUser();
+
+    if(decodedToken === undefined) {
+      return false;
+    }
+
+    if (decodedToken.exp < Date.now() / 1000) {
+      return false;
+    }
+
+    return true;
   }
   `);
 });
