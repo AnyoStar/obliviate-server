@@ -5,6 +5,7 @@ const bodyParser = require("body-parser");
 const port = 4000;
 
 const authService = require("./auth/authService");
+const postService = require("./post/postService");
 
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -40,6 +41,10 @@ app.post("/register", (req, res) => {
 app.post("/login", (req, res) => {
   return authService.login(req, res);
 });
+
+app.post("/addPost", (req, res) => {
+  return postService.addPost(req, res);
+})
 
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`);

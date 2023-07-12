@@ -2,7 +2,33 @@ const db = require("../db/db.js");
 
 const addPost = (req, res) => {
   //포스트 추가
+  const body = req.body;
+  const {title, content, user_id} = body;
+
+  if(!(title && content && user_id)) {
+    return res.json({
+      error: "INVALID PARAMETER",
+    });
+  }
+
   const d = new Date.now();
+
+  const insertQuery = "INSERT INTO posts(title, content, user, created_at, expire_date) VALUES(?, ?, ?, ?, ?)";
+  const insertParameters = [title, content, user_id, d, d + 86400000];
+
+  db.run(insertQuery, insertParameters, (error) => {
+    if(error) {
+      console.error(error);
+      return res.json({
+        error: error.message,
+      });
+    }
+
+    return res.json({
+      message: "데이터 삽입 성공",
+      data: "SUCCESS",
+    });
+  });
 };
 
 const livePosts = (req, res) => {
@@ -50,7 +76,7 @@ const expiredPosts = (req, res) => {
 };
 
 module.exports = {
-  addposts,
+  addPost,
   livePosts,
   expiredPosts,
 };
