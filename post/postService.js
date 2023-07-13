@@ -11,7 +11,7 @@ const addPost = (req, res) => {
     });
   }
 
-  const d = new Date.now();
+  const d = Date.now();
 
   const insertQuery = "INSERT INTO posts(title, content, user, created_at, expire_date) VALUES(?, ?, ?, ?, ?)";
   const insertParameters = [title, content, user_id, d, d + 86400000];
@@ -32,9 +32,9 @@ const addPost = (req, res) => {
 };
 
 const livePosts = (req, res) => {
-  const d = new Date.now();
+  const d = Date.now();
 
-  db.all("SELECT * FROM posts WHERE expire_date < ?", [d], (error, posts) => {
+  db.all("SELECT * FROM posts WHERE expire_date > ?", [d], (error, posts) => {
     if (error) {
       console.error(error);
       return res.json({
@@ -54,9 +54,9 @@ const livePosts = (req, res) => {
 };
 
 const expiredPosts = (req, res) => {
-  const d = new Date.now();
+  const d = Date.now();
 
-  db.all("SELECT * FROM posts WHERE expire_date => ?", [d], (error, posts) => {
+  db.all("SELECT * FROM posts WHERE expire_date <= ?", [d], (error, posts) => {
     if (error) {
       console.error(error);
       return res.json({
@@ -66,7 +66,7 @@ const expiredPosts = (req, res) => {
 
     if (posts === null) {
       return res.json({
-        message: "기억에 남은 포스트가 없습니다.",
+        message: "잊혀진 포스트가 없습니다.",
       });
     }
     return res.json({
